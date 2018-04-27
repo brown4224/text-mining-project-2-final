@@ -333,7 +333,7 @@ def create_model(all_documents_file, relevance_file,query_file):
     rv = relevance.merge(query_file,left_on ="query_num", right_on="query number")[ ["id","query", "position"]]\
         .merge(documents,left_on ="id", right_on="id") [["query", "position", "title", "body"]]
 
-    # Y = [v for k, v in rv["position"].items()]
+    Y = [v for k, v in rv["position"].items()]
     Y1 = []
     Y2 = []
     Y3 = []
@@ -389,165 +389,225 @@ def create_model(all_documents_file, relevance_file,query_file):
     w2v_model.save('resources/w2v.model')
     # d2v_model.save('resources/d2v.model')
 
-    ''' Step 5. Converting query and title to vectors and finding cosine similarity of the vectors'''
-    rv["query_vec"] = rv.apply(lambda x: vectorizer.transform([x["query"]]), axis =1)
-    rv["doc_vec_title"] = rv.apply(lambda x: vectorizer.transform([x["title"] ]), axis =1)
-    rv["doc_vec_body"] = rv.apply(lambda x: vectorizer.transform([ x["body"]]), axis =1)
-
-    '''  COS and COMMON '''
-    rv["cosine_title"]  = rv.apply(lambda x: cosine_similarity(x['doc_vec_title'], x['query_vec']), axis=1)
-    rv["cosine_body"]  = rv.apply(lambda x: cosine_similarity(x['doc_vec_body'], x['query_vec']), axis=1)
-    rv["common_title"] = rv.apply(lambda x: common_terms(x["title"], x["query"] ), axis =1)
-    rv["common_body"] = rv.apply(lambda x: common_terms(x["body"], x["query"]), axis =1)
-    rv["common_title_s"] = rv.apply(lambda x: common_count(x["title"], x["query"],stopwords=True ), axis =1)
-    rv["common_body_s"] = rv.apply(lambda x: common_count(x["body"], x["query"], stopwords=True) , axis =1)
-
-    '''  Word 2V'''
-    rv["query_vec_w2v"] = rv.apply(lambda x: convert_to_w2v(x["query"], w2v_model), axis=1)
-    rv["doc_vec_w2v"] = rv.apply(lambda x: convert_to_w2v(x["title"], w2v_model), axis=1)
-    rv["body_vec_w2v"] = rv.apply(lambda x: convert_to_w2v(x["body"], w2v_model), axis=1)
-
-    ''' Cos W2V'''
-    rv["cosine_title_w2v"]  = rv.apply(lambda x: cosine_similarity(x['doc_vec_w2v'], x['query_vec_w2v'], w2v=True), axis=1)
-    rv["cosine_body_w2v"]  = rv.apply(lambda x: cosine_similarity(x['body_vec_w2v'], x['query_vec_w2v'], w2v=True), axis=1)
-
-    ''' Cos AVG'''
-    rv["avg_cos_title"] = rv.apply(lambda x: cos_avg(x['cosine_title_w2v'], x['cosine_title']), axis=1)
-    rv["avg_cos_body"] = rv.apply(lambda x: cos_avg(x['cosine_body_w2v'], x['cosine_body']), axis=1)
-
-
-    '''Spacy'''
-    # rv["title_spacy"] = rv.apply(lambda x: spacy_similarity(x["title"], x["query"]), axis =1)
-    # rv["body_spacy"] = rv.apply(lambda x: spacy_similarity(x["body"], x["query"]), axis =1)
-    # rv["common_title_noun"] = rv.apply(lambda x: noun_counter(x["title"], x["query"], False ), axis =1)
-    # rv["common_body_noun"] = rv.apply(lambda x: noun_counter(x["body"], x["query"], False), axis =1)
-
-
-
-    '''  Textblob'''
-    rv["query_vec_blob"] = rv.apply(lambda x: convert_to_blob(x["query"]), axis=1)
-    rv["doc_vec_blob"] = rv.apply(lambda x: convert_to_blob(x["title"]), axis=1)
-    rv["body_vec_blob"] = rv.apply(lambda x: convert_to_blob(x["body"]), axis=1)
-
-    '''Split tuples'''
-    rv["query_vec_blob_p"],rv["query_vec_blob_s"]=  split_tuples(rv["query_vec_blob"])
-    rv["doc_vec_blob_p"],rv["doc_vec_blob_s"]=  split_tuples(rv["doc_vec_blob"])
-    rv["body_vec_blob_p"],rv["body_vec_blob_s"]=  split_tuples(rv["body_vec_blob"])
-
-    '''Sentament cosine'''
-    rv["cosine_title_pblob"]  = rv.apply(lambda x: cosine_similarity(x['doc_vec_blob_p'], rv["query_vec_blob_p"], w2v=True), axis=1)
-    rv["cosine_title_sblob"]  = rv.apply(lambda x: cosine_similarity(x['doc_vec_blob_s'], rv["query_vec_blob_s"], w2v=True), axis=1)
-    rv["cosine_body_pblob"]  = rv.apply(lambda x: cosine_similarity(x['body_vec_blob_p'], x['query_vec_blob_p'], w2v=True), axis=1)
-    rv["cosine_body_sblob"]  = rv.apply(lambda x: cosine_similarity(x['body_vec_blob_s'], x['query_vec_blob_p'], w2v=True), axis=1)
-
-
-
-    ''' IDF Extraction'''
-    rv["max_query_idf"] = rv.apply(lambda x: np.max(x["query_vec"]), axis=1)
-    rv["max_pos_query_idf"] = rv.apply(lambda x: np.argmax(x["query_vec"]), axis=1)
-    rv["sum_query_idf"] = rv.apply(lambda x: np.sum(x["query_vec"]), axis=1)
-    rv["len_query_idf"] = rv.apply(lambda x: text_length(x["query"]), axis=1)
-    rv["norm_query_idf"] = np.divide(rv["sum_query_idf"], rv["len_query_idf"])
-    rv["prob_query_idf"] = rv.apply(lambda x: idf_prob(x["query_vec"]), axis =1)
-    rv["mean_query_idf"] = rv.apply(lambda x: np.mean(x["query_vec"]), axis=1)
-
-
-    rv["max_title_idf"] = rv.apply(lambda x: np.max(x["doc_vec_title"]), axis =1)
-    rv["max_pos_title_idf"] = rv.apply(lambda x: np.argmax(x["doc_vec_title"]), axis =1)
-    rv["sum_title_idf"] = rv.apply(lambda x: np.sum(x["doc_vec_title"]), axis =1)
-    rv["len_title_idf"] = rv.apply(lambda x: text_length(x["title"]), axis =1)
-    rv["norm_title_idf"] = np.divide(rv["sum_title_idf"] ,rv["len_title_idf"] )
-    rv["prob_title_idf"] = rv.apply(lambda x: idf_prob(x["doc_vec_title"]), axis =1)
-    rv["mean_title_idf"] = rv.apply(lambda x: np.mean(x["doc_vec_title"]), axis =1)
-
-
-    rv["max_body_idf"] = rv.apply(lambda x: np.max(x["doc_vec_body"]), axis =1)
-    rv["max_pos_body_idf"] = rv.apply(lambda x: np.argmax(x["doc_vec_body"]), axis =1)
-    rv["sum_body_idf"] = rv.apply(lambda x: np.sum(x["doc_vec_body"]), axis =1)
-    rv["len_body_idf"] = rv.apply(lambda x: text_length(x["body"]), axis =1)
-    rv["norm_body_idf"] = np.divide(rv["sum_body_idf"] ,rv["len_body_idf"] )
-    rv["prob_body_idf"] = rv.apply(lambda x: idf_prob(x["doc_vec_body"]), axis =1)
-    rv["mean_body_idf"] = rv.apply(lambda x: np.mean(x["doc_vec_body"]), axis =1)
-
-
-
-    ''' W2V Data '''
-    rv["query_vec_w2v_pos"] = rv.apply(lambda x: np.argmax(x["query_vec_w2v"]), axis=1)
-    rv["query_vec_w2v_max"] = rv.apply(lambda x: np.max(x["query_vec_w2v"]), axis=1)
-    rv["query_vec_w2v_min"] = rv.apply(lambda x: np.min(x["query_vec_w2v"]), axis=1)
-    rv["query_vec_w2v_sum"] = rv.apply(lambda x: np.sum(x["query_vec_w2v"]), axis=1)
-    rv["query_vec_w2v_norm"] = np.divide(rv["query_vec_w2v_sum"] ,rv["len_title_idf"] )
-    rv["query_vec_w2v_prob"] = rv.apply(lambda x: idf_prob(x["query_vec_w2v"]), axis =1)
-
-
-
-    rv["doc_vec_w2v_pos"] = rv.apply(lambda x: np.argmax(x["doc_vec_w2v"]), axis=1)
-    rv["doc_vec_w2v_max"] = rv.apply(lambda x: np.max(x["doc_vec_w2v"]), axis=1)
-    rv["doc_vec_w2v_min"] = rv.apply(lambda x: np.min(x["doc_vec_w2v"]), axis=1)
-    rv["doc_vec_w2v_sum"] = rv.apply(lambda x: np.sum(x["doc_vec_w2v"]), axis=1)
-    rv["doc_vec_w2v_norm"] = np.divide(rv["doc_vec_w2v_sum"] ,rv["len_title_idf"] )
-    rv["doc_vec_w2v_prob"] = rv.apply(lambda x: idf_prob(x["doc_vec_w2v"]), axis =1)
-
-
-    rv["body_vec_w2v_pos"] = rv.apply(lambda x: np.argmax(x["body_vec_w2v"]), axis=1)
-    rv["body_vec_w2v_max"] = rv.apply(lambda x: np.max(x["body_vec_w2v"]), axis=1)
-    rv["body_vec_w2v_min"] = rv.apply(lambda x: np.min(x["body_vec_w2v"]), axis=1)
-    rv["body_vec_w2v_sum"] = rv.apply(lambda x: np.sum(x["body_vec_w2v"]), axis=1)
-    rv["body_vec_w2v_norm"] = np.divide(rv["doc_vec_w2v_sum"] ,rv["len_body_idf"] )
-    rv["body_vec_w2v_prob"] = rv.apply(lambda x: idf_prob(x["body_vec_w2v"]), axis =1)
-
-
-
-
-    rv["title_count"], rv["title_max_pos"], rv["title_max"], rv["title_prob"],  rv["title_sum"], \
-    rv["query_title_max_pos"], rv["query_title_max"], rv["query_title_prob"], rv["query_title_sum"] =  idf_sparce(rv["doc_vec_title"], rv["query_vec"])
-    rv["body_count"], rv["body_max_pos"], rv["body_max"],  rv["body_prob"], rv["body_sum"], \
-    rv["query_body_max_pos"], rv["query_body_max"], rv["query_body_prob"], rv["query_body_sum"] =  idf_sparce(rv["doc_vec_body"], rv["query_vec"])
-
-
-    rv["query_title_norm"] = np.divide(rv["query_title_sum"] ,rv["len_title_idf"] )
-    rv["query_body_norm"] = np.divide(rv["query_body_sum"] ,rv["len_body_idf"] )
-
-    rv["query_title_sum"] = np.divide(rv["query_title_sum"] ,rv["title_count"] +1 )
-    rv["query_body_sum"] = np.divide(rv["query_body_sum"] ,rv["body_count"] + 1 )
-
-
+    # ''' Step 5. Converting query and title to vectors and finding cosine similarity of the vectors'''
+    # rv["query_vec"] = rv.apply(lambda x: vectorizer.transform([x["query"]]), axis =1)
+    # rv["doc_vec_title"] = rv.apply(lambda x: vectorizer.transform([x["title"] ]), axis =1)
+    # rv["doc_vec_body"] = rv.apply(lambda x: vectorizer.transform([ x["body"]]), axis =1)
+    #
+    # '''  COS and COMMON '''
+    # rv["cosine_title"]  = rv.apply(lambda x: cosine_similarity(x['doc_vec_title'], x['query_vec']), axis=1)
+    # rv["cosine_body"]  = rv.apply(lambda x: cosine_similarity(x['doc_vec_body'], x['query_vec']), axis=1)
+    # rv["common_title"] = rv.apply(lambda x: common_terms(x["title"], x["query"] ), axis =1)
+    # rv["common_body"] = rv.apply(lambda x: common_terms(x["body"], x["query"]), axis =1)
+    # rv["common_title_s"] = rv.apply(lambda x: common_count(x["title"], x["query"],stopwords=True ), axis =1)
+    # rv["common_body_s"] = rv.apply(lambda x: common_count(x["body"], x["query"], stopwords=True) , axis =1)
+    #
+    # '''  Word 2V'''
+    # rv["query_vec_w2v"] = rv.apply(lambda x: convert_to_w2v(x["query"], w2v_model), axis=1)
+    # rv["doc_vec_w2v"] = rv.apply(lambda x: convert_to_w2v(x["title"], w2v_model), axis=1)
+    # rv["body_vec_w2v"] = rv.apply(lambda x: convert_to_w2v(x["body"], w2v_model), axis=1)
+    #
+    # ''' Cos W2V'''
+    # rv["cosine_title_w2v"]  = rv.apply(lambda x: cosine_similarity(x['doc_vec_w2v'], x['query_vec_w2v'], w2v=True), axis=1)
+    # rv["cosine_body_w2v"]  = rv.apply(lambda x: cosine_similarity(x['body_vec_w2v'], x['query_vec_w2v'], w2v=True), axis=1)
+    #
+    # ''' Cos AVG'''
+    # rv["avg_cos_title"] = rv.apply(lambda x: cos_avg(x['cosine_title_w2v'], x['cosine_title']), axis=1)
+    # rv["avg_cos_body"] = rv.apply(lambda x: cos_avg(x['cosine_body_w2v'], x['cosine_body']), axis=1)
+    #
+    #
+    # '''Spacy'''
+    # # rv["title_spacy"] = rv.apply(lambda x: spacy_similarity(x["title"], x["query"]), axis =1)
+    # # rv["body_spacy"] = rv.apply(lambda x: spacy_similarity(x["body"], x["query"]), axis =1)
+    # # rv["common_title_noun"] = rv.apply(lambda x: noun_counter(x["title"], x["query"], False ), axis =1)
+    # # rv["common_body_noun"] = rv.apply(lambda x: noun_counter(x["body"], x["query"], False), axis =1)
+    #
+    #
+    #
+    # '''  Textblob'''
+    # rv["query_vec_blob"] = rv.apply(lambda x: convert_to_blob(x["query"]), axis=1)
+    # rv["doc_vec_blob"] = rv.apply(lambda x: convert_to_blob(x["title"]), axis=1)
+    # rv["body_vec_blob"] = rv.apply(lambda x: convert_to_blob(x["body"]), axis=1)
+    #
+    # '''Split tuples'''
+    # rv["query_vec_blob_p"],rv["query_vec_blob_s"]=  split_tuples(rv["query_vec_blob"])
+    # rv["doc_vec_blob_p"],rv["doc_vec_blob_s"]=  split_tuples(rv["doc_vec_blob"])
+    # rv["body_vec_blob_p"],rv["body_vec_blob_s"]=  split_tuples(rv["body_vec_blob"])
+    #
+    # '''Sentament cosine'''
+    # rv["cosine_title_pblob"]  = rv.apply(lambda x: cosine_similarity(x['doc_vec_blob_p'], rv["query_vec_blob_p"], w2v=True), axis=1)
+    # rv["cosine_title_sblob"]  = rv.apply(lambda x: cosine_similarity(x['doc_vec_blob_s'], rv["query_vec_blob_s"], w2v=True), axis=1)
+    # rv["cosine_body_pblob"]  = rv.apply(lambda x: cosine_similarity(x['body_vec_blob_p'], x['query_vec_blob_p'], w2v=True), axis=1)
+    # rv["cosine_body_sblob"]  = rv.apply(lambda x: cosine_similarity(x['body_vec_blob_s'], x['query_vec_blob_p'], w2v=True), axis=1)
+    #
+    #
+    #
+    # ''' IDF Extraction'''
+    # rv["max_query_idf"] = rv.apply(lambda x: np.max(x["query_vec"]), axis=1)
+    # rv["max_pos_query_idf"] = rv.apply(lambda x: np.argmax(x["query_vec"]), axis=1)
+    # rv["sum_query_idf"] = rv.apply(lambda x: np.sum(x["query_vec"]), axis=1)
+    # rv["len_query_idf"] = rv.apply(lambda x: text_length(x["query"]), axis=1)
+    # rv["norm_query_idf"] = np.divide(rv["sum_query_idf"], rv["len_query_idf"])
+    # rv["prob_query_idf"] = rv.apply(lambda x: idf_prob(x["query_vec"]), axis =1)
+    # rv["mean_query_idf"] = rv.apply(lambda x: np.mean(x["query_vec"]), axis=1)
+    #
+    #
+    # rv["max_title_idf"] = rv.apply(lambda x: np.max(x["doc_vec_title"]), axis =1)
+    # rv["max_pos_title_idf"] = rv.apply(lambda x: np.argmax(x["doc_vec_title"]), axis =1)
+    # rv["sum_title_idf"] = rv.apply(lambda x: np.sum(x["doc_vec_title"]), axis =1)
+    # rv["len_title_idf"] = rv.apply(lambda x: text_length(x["title"]), axis =1)
+    # rv["norm_title_idf"] = np.divide(rv["sum_title_idf"] ,rv["len_title_idf"] )
+    # rv["prob_title_idf"] = rv.apply(lambda x: idf_prob(x["doc_vec_title"]), axis =1)
+    # rv["mean_title_idf"] = rv.apply(lambda x: np.mean(x["doc_vec_title"]), axis =1)
+    #
+    #
+    # rv["max_body_idf"] = rv.apply(lambda x: np.max(x["doc_vec_body"]), axis =1)
+    # rv["max_pos_body_idf"] = rv.apply(lambda x: np.argmax(x["doc_vec_body"]), axis =1)
+    # rv["sum_body_idf"] = rv.apply(lambda x: np.sum(x["doc_vec_body"]), axis =1)
+    # rv["len_body_idf"] = rv.apply(lambda x: text_length(x["body"]), axis =1)
+    # rv["norm_body_idf"] = np.divide(rv["sum_body_idf"] ,rv["len_body_idf"] )
+    # rv["prob_body_idf"] = rv.apply(lambda x: idf_prob(x["doc_vec_body"]), axis =1)
+    # rv["mean_body_idf"] = rv.apply(lambda x: np.mean(x["doc_vec_body"]), axis =1)
+    #
+    #
+    #
+    # ''' W2V Data '''
+    # rv["query_vec_w2v_pos"] = rv.apply(lambda x: np.argmax(x["query_vec_w2v"]), axis=1)
+    # rv["query_vec_w2v_max"] = rv.apply(lambda x: np.max(x["query_vec_w2v"]), axis=1)
+    # rv["query_vec_w2v_min"] = rv.apply(lambda x: np.min(x["query_vec_w2v"]), axis=1)
+    # rv["query_vec_w2v_sum"] = rv.apply(lambda x: np.sum(x["query_vec_w2v"]), axis=1)
+    # rv["query_vec_w2v_norm"] = np.divide(rv["query_vec_w2v_sum"] ,rv["len_title_idf"] )
+    # rv["query_vec_w2v_prob"] = rv.apply(lambda x: idf_prob(x["query_vec_w2v"]), axis =1)
+    #
+    #
+    #
+    # rv["doc_vec_w2v_pos"] = rv.apply(lambda x: np.argmax(x["doc_vec_w2v"]), axis=1)
+    # rv["doc_vec_w2v_max"] = rv.apply(lambda x: np.max(x["doc_vec_w2v"]), axis=1)
+    # rv["doc_vec_w2v_min"] = rv.apply(lambda x: np.min(x["doc_vec_w2v"]), axis=1)
+    # rv["doc_vec_w2v_sum"] = rv.apply(lambda x: np.sum(x["doc_vec_w2v"]), axis=1)
+    # rv["doc_vec_w2v_norm"] = np.divide(rv["doc_vec_w2v_sum"] ,rv["len_title_idf"] )
+    # rv["doc_vec_w2v_prob"] = rv.apply(lambda x: idf_prob(x["doc_vec_w2v"]), axis =1)
+    #
+    #
+    # rv["body_vec_w2v_pos"] = rv.apply(lambda x: np.argmax(x["body_vec_w2v"]), axis=1)
+    # rv["body_vec_w2v_max"] = rv.apply(lambda x: np.max(x["body_vec_w2v"]), axis=1)
+    # rv["body_vec_w2v_min"] = rv.apply(lambda x: np.min(x["body_vec_w2v"]), axis=1)
+    # rv["body_vec_w2v_sum"] = rv.apply(lambda x: np.sum(x["body_vec_w2v"]), axis=1)
+    # rv["body_vec_w2v_norm"] = np.divide(rv["doc_vec_w2v_sum"] ,rv["len_body_idf"] )
+    # rv["body_vec_w2v_prob"] = rv.apply(lambda x: idf_prob(x["body_vec_w2v"]), axis =1)
+    #
+    #
+    #
+    #
+    # rv["title_count"], rv["title_max_pos"], rv["title_max"], rv["title_prob"],  rv["title_sum"], \
+    # rv["query_title_max_pos"], rv["query_title_max"], rv["query_title_prob"], rv["query_title_sum"] =  idf_sparce(rv["doc_vec_title"], rv["query_vec"])
+    # rv["body_count"], rv["body_max_pos"], rv["body_max"],  rv["body_prob"], rv["body_sum"], \
+    # rv["query_body_max_pos"], rv["query_body_max"], rv["query_body_prob"], rv["query_body_sum"] =  idf_sparce(rv["doc_vec_body"], rv["query_vec"])
+    #
+    #
+    # rv["query_title_norm"] = np.divide(rv["query_title_sum"] ,rv["len_title_idf"] )
+    # rv["query_body_norm"] = np.divide(rv["query_body_sum"] ,rv["len_body_idf"] )
+    #
+    # rv["query_title_sum"] = np.divide(rv["query_title_sum"] ,rv["title_count"] +1 )
+    # rv["query_body_sum"] = np.divide(rv["query_body_sum"] ,rv["body_count"] + 1 )
+    #
+    #
 
 
 
 
     ''' Step 6. Defining the feature and label  for classification'''
 
-    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"]  + ["common_title_s"] + ["avg_cos_body"] + [
-        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]+ ["common_body_s"]
+    # X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"]  + ["common_title_s"] + ["avg_cos_body"] + [
+    #     "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]+ ["common_body_s"]
+    #
+    #
+    #        + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+    #        + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]+["mean_query_idf"]
+    #        + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]+["mean_title_idf"]
+    #        + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]+["mean_body_idf"]
+    #        + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+    #        + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+    #        + ['body_vec_blob_p'] + ['body_vec_blob_s']
+    #
+    #        # + ["query_title_max"] + ["query_body_max"]
+    #        # + ["query_title_norm"] + ["query_body_norm"]
+    #        # + ["query_title_prob"]+ ["query_body_prob"]
+    #        #  +  ["query_title_sum"] +["query_body_sum"]
+    #        # + ["query_title_max_pos"] + ["query_body_max_pos"]
+    #
+    #
+    # ]
+    #
+    #
 
-
-           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
-           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]+["mean_query_idf"]
-           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]+["mean_title_idf"]
-           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]+["mean_body_idf"]
-           + ["query_vec_blob_p"] + ["query_vec_blob_s"]
-           + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
-           + ['body_vec_blob_p'] + ['body_vec_blob_s']
-
-           # + ["query_title_max"] + ["query_body_max"]
-           # + ["query_title_norm"] + ["query_body_norm"]
-           # + ["query_title_prob"]+ ["query_body_prob"]
-           #  +  ["query_title_sum"] +["query_body_sum"]
-           # + ["query_title_max_pos"] + ["query_body_max_pos"]
-
-
-    ]
-
-
-
-
+    Y = [v for k, v in rv["position"].items()]
 
     ''' Step 7. Splitting the data for validation'''
-    X_train, X_test, y_train, y_test = train_test_split(    X, Y, test_size = 0.33, random_state = 42)
+    X_train, X_test, y_train, y_test = train_test_split(    rv ["all_text"], Y, test_size = 0.33, random_state = 42)
+
+    Y1 = []
+    Y2 = []
+    Y3 = []
+    Y4 = []
+    for y in y_train:
+        if y == 1:
+            Y1.append("pos")
+            Y2.append("neg")
+            Y3.append("neg")
+            Y4.append("neg")
+        if y == 2:
+            Y1.append("neg")
+            Y2.append("pos")
+            Y3.append("neg")
+            Y4.append("neg")
+        if y == 3:
+            Y1.append("neg")
+            Y2.append("neg")
+            Y3.append("pos")
+            Y4.append("neg")
+        if y == 4:
+            Y1.append("neg")
+            Y2.append("neg")
+            Y3.append("neg")
+            Y4.append("pos")
+    from textblob.classifiers import NaiveBayesClassifier
+    c1 = NaiveBayesClassifier(np.column_stack((X_train, Y1)))
+
+    # for x in X_test:
+    #     p1 = c1.prob_classify(x)
+    #     print(p1.prob("pos"))
+    #     print(p1.prob("neg"))
+    #     print(round(p1.prob("pos"), 2))
+    #     print(round(p1.prob("neg"), 2))
+    #     exit(0)
+
+    c2 = NaiveBayesClassifier(np.column_stack((X_train, Y2)))
+    c3 = NaiveBayesClassifier(np.column_stack((X_train, Y3)))
+    c4 = NaiveBayesClassifier(np.column_stack((X_train, Y4)))
+
+    results = []
+    print("training Complete.... Please wait")
+    for tokens in  X_test:
+        # print(tokens)
+        place_holder = np.zeros(5)
+        p1 = c1.prob_classify(tokens)
+        p2 = c2.prob_classify(tokens)
+        p3 = c3.prob_classify(tokens)
+        p4 = c4.prob_classify(tokens)
+        p1.max()
+        p2.max()
+        p3.max()
+        p4.max()
+        place_holder[1] += p1.prob("pos")
+        place_holder[2] += p2.prob("pos")
+        place_holder[3] += p3.prob("pos")
+        place_holder[4] += p4.prob("pos")
+        results.append(np.argmax(place_holder))
 
     ''' Step 8. Classification and validation'''
     target_names = ['1', '2', '3','4']
+    print("Results", results)
     # from sklearn.cluster import KMeans
     #
     # kmeans = KMeans(n_clusters=5).fit(X)
@@ -555,7 +615,7 @@ def create_model(all_documents_file, relevance_file,query_file):
     # print(classification_report(y_test, kmeans.predict(X_test), target_names=target_names))
 
     from sklearn.svm import LinearSVC
-    clf = RandomForestClassifier().fit(X_train, y_train)
+    # clf = RandomForestClassifier().fit(X_train, y_train)
     # clf = RandomForestClassifier(random_state=0, n_estimators=3000).fit(X_train, y_train)
 
     # clf = RandomForestClassifier(class_weight="balanced").fit(X_train, y_train)
@@ -574,7 +634,7 @@ def create_model(all_documents_file, relevance_file,query_file):
     # X = preprocessing.normalize(X)
 
 
-    print(classification_report(y_test,  clf.predict(X_test), target_names=target_names))
+    print(classification_report(y_test,  results, target_names=target_names))
 
     ''' Step 9. Saving the data '''
     joblib.dump(clf, 'resources/classifier.pkl')
