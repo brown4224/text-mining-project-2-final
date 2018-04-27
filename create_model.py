@@ -338,6 +338,7 @@ def create_model(all_documents_file, relevance_file,query_file):
 
     ''' Step 3. Creating a model for generating TF feature'''
     # vectorizer = TfidfVectorizer( )
+    # vectorizer = TfidfVectorizer( )
     vectorizer = TfidfVectorizer( min_df=0.0, max_df=1.0, stop_words="english", lowercase=True, norm="l2", strip_accents='ascii')
     vectorizer = vectorizer.fit(rv["all_text"])
 
@@ -372,10 +373,9 @@ def create_model(all_documents_file, relevance_file,query_file):
     rv["cosine_body"]  = rv.apply(lambda x: cosine_similarity(x['doc_vec_body'], x['query_vec']), axis=1)
     rv["common_title"] = rv.apply(lambda x: common_terms(x["title"], x["query"] ), axis =1)
     rv["common_body"] = rv.apply(lambda x: common_terms(x["body"], x["query"]), axis =1)
-    rv["common_title_s"] = rv.apply(lambda x: common_count(x["title"], x["query"] ), axis =1)
-    rv["common_body_s"] = rv.apply(lambda x: common_count(x["body"], x["query"]), axis =1)
-    # rv["common_title_noun"] = rv.apply(lambda x: noun_counter(x["title"], x["query"], False ), axis =1)
-    # rv["common_body_noun"] = rv.apply(lambda x: noun_counter(x["body"], x["query"], False), axis =1)
+    rv["common_title_s"] = rv.apply(lambda x: common_count(x["title"], x["query"],stopwords=True ), axis =1)
+    rv["common_body_s"] = rv.apply(lambda x: common_count(x["body"], x["query"], stopwords=True) , axis =1)
+
     '''  Word 2V'''
     rv["query_vec_w2v"] = rv.apply(lambda x: convert_to_w2v(x["query"], w2v_model), axis=1)
     rv["doc_vec_w2v"] = rv.apply(lambda x: convert_to_w2v(x["title"], w2v_model), axis=1)
@@ -393,6 +393,11 @@ def create_model(all_documents_file, relevance_file,query_file):
     '''Spacy'''
     # rv["title_spacy"] = rv.apply(lambda x: spacy_similarity(x["title"], x["query"]), axis =1)
     # rv["body_spacy"] = rv.apply(lambda x: spacy_similarity(x["body"], x["query"]), axis =1)
+    # rv["common_title_noun"] = rv.apply(lambda x: noun_counter(x["title"], x["query"], False ), axis =1)
+    # rv["common_body_noun"] = rv.apply(lambda x: noun_counter(x["body"], x["query"], False), axis =1)
+
+
+
     '''  Textblob'''
     rv["query_vec_blob"] = rv.apply(lambda x: convert_to_blob(x["query"]), axis=1)
     rv["doc_vec_blob"] = rv.apply(lambda x: convert_to_blob(x["title"]), axis=1)
@@ -419,7 +424,6 @@ def create_model(all_documents_file, relevance_file,query_file):
     rv["norm_query_idf"] = np.divide(rv["sum_query_idf"], rv["len_query_idf"])
     rv["prob_query_idf"] = rv.apply(lambda x: idf_prob(x["query_vec"]), axis =1)
     rv["mean_query_idf"] = rv.apply(lambda x: np.mean(x["query_vec"]), axis=1)
-    # rv["std_query_idf"] = rv.apply(lambda x: np.cos(x["query_vec"] + 1), axis=1)
 
 
     rv["max_title_idf"] = rv.apply(lambda x: np.max(x["doc_vec_title"]), axis =1)
@@ -429,7 +433,6 @@ def create_model(all_documents_file, relevance_file,query_file):
     rv["norm_title_idf"] = np.divide(rv["sum_title_idf"] ,rv["len_title_idf"] )
     rv["prob_title_idf"] = rv.apply(lambda x: idf_prob(x["doc_vec_title"]), axis =1)
     rv["mean_title_idf"] = rv.apply(lambda x: np.mean(x["doc_vec_title"]), axis =1)
-    # rv["std_title_idf"] = rv.apply(lambda x: np.cos(x["doc_vec_title"]+ 1, x["query_vec"] +1 ), axis =1)
 
 
     rv["max_body_idf"] = rv.apply(lambda x: np.max(x["doc_vec_body"]), axis =1)
@@ -439,7 +442,6 @@ def create_model(all_documents_file, relevance_file,query_file):
     rv["norm_body_idf"] = np.divide(rv["sum_body_idf"] ,rv["len_body_idf"] )
     rv["prob_body_idf"] = rv.apply(lambda x: idf_prob(x["doc_vec_body"]), axis =1)
     rv["mean_body_idf"] = rv.apply(lambda x: np.mean(x["doc_vec_body"]), axis =1)
-    # rv["std_body_idf"] = rv.apply(lambda x: np.std(x["doc_vec_body"]), axis =1)
 
 
 
@@ -489,199 +491,79 @@ def create_model(all_documents_file, relevance_file,query_file):
 
 
     ''' Step 6. Defining the feature and label  for classification'''
-    X = rv[
-        # ["cosine_title"]+ ["cosine_title_w2v"]+["common_title"] + ["cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
-        # + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
-        ["common_title"] + ["common_body"]
-        # + ["common_title_s"] + ["common_body_s"]
-        + ["max_query_idf"] + ["norm_query_idf"] + ["sum_query_idf"] + ["len_query_idf"] + ["prob_query_idf"] +["mean_query_idf"]
-        + ["max_title_idf"] + ["norm_title_idf"] + ["sum_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]+["mean_title_idf"]
-        + ["max_body_idf"] + ["norm_body_idf"] + ["sum_body_idf"] + ["len_body_idf"] + ["prob_body_idf"] +["mean_body_idf"]
-        # + ["query_vec_w2v_sum"]+ ["doc_vec_w2v_sum"] + ["body_vec_w2v_sum"]
-        # + ["query_vec_w2v_max"]+ ["doc_vec_w2v_max"] + ["body_vec_w2v_max"]
 
-        # + ["query_vec_w2v_max"] + ["query_vec_w2v_norm"] + ["query_vec_w2v_sum"] + ["query_vec_w2v_prob"]
-        # + ["doc_vec_w2v_max"] + ["doc_vec_w2v_norm"] + ["doc_vec_w2v_sum"] + ["doc_vec_w2v_prob"]
-        # + ["body_vec_w2v_max"] + ["body_vec_w2v_norm"] + ["body_vec_w2v_sum"] + ["body_vec_w2v_prob"]
-        # + ["query_title_max_pos"] + ["query_title_max"] + ["query_title_norm"] + ["query_title_sum"]
-        # + ["query_body_max_pos"] + ["query_body_max"] + ["query_body_norm"] + ["query_body_sum"]
-        # + ["title_count"] + ["body_count"]
-        + ["query_vec_blob_p"] + ["query_vec_blob_s"]
-        + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
-        + ['body_vec_blob_p'] + ['body_vec_blob_s']
-        # + ["common_title_noun"] + ["common_body_noun"]
-        # + ["title_spacy"] + ["body_spacy"]
-
-        ]
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"]  + ["common_title_s"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]+ ["common_body_s"]
 
 
+           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]+["mean_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]+["mean_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]+["mean_body_idf"]
+           + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           + ['body_vec_blob_p'] + ['body_vec_blob_s']
 
-    # X = rv[ ["common_title"] +  ["common_body"]
-    #     + ["max_query_idf"]  + ["max_pos_query_idf"]  + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
-    #     + ["max_title_idf"]  + ["max_pos_title_idf"]  + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
-    #     + ["max_body_idf"]   + ["max_pos_body_idf"]   + ["norm_body_idf"]  + ["len_body_idf"]  + ["prob_body_idf"]]
+           # + ["query_title_max"] + ["query_body_max"]
+           # + ["query_title_norm"] + ["query_body_norm"]
+           # + ["query_title_prob"]+ ["query_body_prob"]
+           #  +  ["query_title_sum"] +["query_body_sum"]
+           # + ["query_title_max_pos"] + ["query_body_max_pos"]
 
 
-    # X = rv[
-    #     # ["cosine_title"]+ ["cosine_title_w2v"]+["common_title"] + ["cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
-    #     # + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
-    #     ["common_title"] + ["common_body"]
-    #     + ["max_query_idf"] + ["norm_query_idf"] + ["sum_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
-    #     + ["max_title_idf"] + ["norm_title_idf"] + ["sum_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
-    #     + ["max_body_idf"] + ["norm_body_idf"] + ["sum_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]
-    #     # + ["query_vec_w2v_max"] + ["query_vec_w2v_norm"] + ["query_vec_w2v_sum"] + ["query_vec_w2v_prob"]
-    #     # + ["doc_vec_w2v_max"] + ["doc_vec_w2v_norm"] + ["doc_vec_w2v_sum"] + ["doc_vec_w2v_prob"]
-    #     # + ["body_vec_w2v_max"] + ["body_vec_w2v_norm"] + ["body_vec_w2v_sum"] + ["body_vec_w2v_prob"]
-    #
-    #     # + ["query_title_max_pos"] + ["query_title_max"]  + ["query_title_norm"] + ["query_title_sum"]
-    #     #     + ["query_body_max_pos"] + ["query_body_max"] + ["query_body_norm"] + ["query_body_sum"]
-    #     # + ["title_count"] + ["body_count"]
-    #     + ["query_vec_blob_p"] + ["query_vec_blob_s"]
-    #     + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
-    #     + ['body_vec_blob_p'] + ['body_vec_blob_s']
-    #     # + ["title_spacy"] + ["body_spacy"]
-    #
-    #
-    #     ]
+    ]
 
-    # X = rv[
-    #     ["cosine_title"]+ ["cosine_title_w2v"]+["common_title"] + ["cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
-    #     + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
-    #     #  ["common_title"]  + ["common_body"]
-    #     + ["max_query_idf"]    + ["norm_query_idf"] + ["sum_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
-    #     + ["max_title_idf"]   + ["norm_title_idf"]+ ["sum_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
-    #     + ["max_body_idf"]     + ["norm_body_idf"] + ["sum_body_idf"]  + ["len_body_idf"]  + ["prob_body_idf"]
-    #      + ["query_vec_w2v_max"]   + ["query_vec_w2v_norm"] + ["query_vec_w2v_sum"]+ ["query_vec_w2v_prob"]
-    #      + ["doc_vec_w2v_max"] +   ["doc_vec_w2v_norm"] + ["doc_vec_w2v_sum"]+ ["doc_vec_w2v_prob"]
-    #      + ["body_vec_w2v_max"] + ["body_vec_w2v_norm"] + ["body_vec_w2v_sum"]  + ["body_vec_w2v_prob"]
-    #
-    #     + ["title_count"] + ["title_max_pos"] + ["title_max"] + ["title_prob"] + ["title_sum"]
-    #     + ["query_title_max_pos"] + ["query_title_max"] + ["query_title_prob"] + ["query_title_sum"]
-    #     + ["body_count"] + ["body_max_pos"] + ["body_max"] + ["body_prob"] + ["body_sum"]
-    #     + ["query_body_max_pos"] + ["query_body_max"] + ["query_body_prob"] + ["query_body_sum"]
-    #
-    #     + ["query_vec_blob_p"] + ["query_vec_blob_s"]
-    #     + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
-    #     + ['body_vec_blob_p'] + ['body_vec_blob_s']
-    #     # + ["title_spacy"] + ["body_spacy"]
-    #     ]
-    # X = rv[
-    #     # ["cosine_title"]+ ["cosine_title_w2v"]+["common_title"] + ["cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
-    #     # + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
-    #     ["common_title"]  + ["common_body"]
-    #     + ["max_query_idf"]    + ["norm_query_idf"] + ["sum_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
-    #     + ["max_title_idf"]   + ["norm_title_idf"]+ ["sum_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
-    #     + ["max_body_idf"]     + ["norm_body_idf"] + ["sum_body_idf"]  + ["len_body_idf"]  + ["prob_body_idf"]
-    #      + ["query_vec_w2v_max"]   + ["query_vec_w2v_norm"] + ["query_vec_w2v_sum"]+ ["query_vec_w2v_prob"]
-    #      + ["doc_vec_w2v_max"] +   ["doc_vec_w2v_norm"] + ["doc_vec_w2v_sum"]+ ["doc_vec_w2v_prob"]
-    #      + ["body_vec_w2v_max"] + ["body_vec_w2v_norm"] + ["body_vec_w2v_sum"]  + ["body_vec_w2v_prob"]
-    #     + ["query_vec_blob_p"] + ["query_vec_blob_s"]
-    #     + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
-    #     + ['body_vec_blob_p'] + ['body_vec_blob_s']
-    #     # + ["title_spacy"] + ["body_spacy"]
-    #
-    #     ]
+    # + ["query_title_max"] + ["query_title_norm"] + ["query_title_sum"]
+    # #     + ["query_body_max_pos"] + ["query_body_max"]
 
-    #
-    # X = rv[
-    #     ["common_title"] +  ["common_body"]
-    #     # + ["query_vec_blob_p"] + ["query_vec_blob_s"]
-    #     # + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
-    #     # + ['body_vec_blob_p'] + ['body_vec_blob_s']
-    #     + ["max_query_idf"]  + ["max_pos_query_idf"]  + ["norm_query_idf"] + ["len_query_idf"]
-    #     + ["max_title_idf"]  + ["max_pos_title_idf"]  + ["norm_title_idf"] + ["len_title_idf"]
-    #     + ["max_body_idf"]   + ["max_pos_body_idf"]   + ["norm_body_idf"]  + ["len_body_idf"]
-    #     # + ["query_title_prob"] + ["query_body_prob"]
-    #         # + ["query_vec_blob_p"] + ["query_vec_blob_s"]
-    #         # + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
-    #         # + ['body_vec_blob_p'] + ['body_vec_blob_s']
-    #
-    #
-    #     # + ["title_count"]+ ["title_max_pos"]+ ["title_max"]+["title_prob"]+  ["title_sum"]
-    #     # + ["query_title_max_pos"]+ ["query_title_max"]+ ["query_title_prob"]+ ["query_title_sum"]
-    #     # + ["body_count"]+ ["body_max_pos"]+ ["body_max"]+  ["body_prob"]+ ["body_sum"]
-    #     # + ["query_body_max_pos"]+["query_body_max"]+ ["query_body_prob"]+ ["query_body_sum"]
-    #
-    #     # + ["query_vec_w2v_pos"] + ["query_vec_w2v_max"]   + ["query_vec_w2v_norm"] + ["query_vec_w2v_sum"] + ["query_vec_w2v_prob"]
-    #     # + ["doc_vec_w2v_pos"] + ["doc_vec_w2v_max"] +   ["doc_vec_w2v_norm"] + ["doc_vec_w2v_sum"] + ["doc_vec_w2v_prob"]
-    #     # + ["body_vec_w2v_pos"] + ["body_vec_w2v_max"] + ["body_vec_w2v_norm"] + ["body_vec_w2v_sum"] + ["body_vec_w2v_prob"]
+
+    # X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["avg_cos_body"] + [
+    #     "cosine_body"] + ["cosine_body_w2v"]
+
+           #
+           # + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           # + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]+["mean_query_idf"]
+           # + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]+["mean_title_idf"]
+           # + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]+["mean_body_idf"]
+           # + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           # + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           # + ['body_vec_blob_p'] + ['body_vec_blob_s']
+
+
     # ]
 
 
-    # X = rv[ ["avg_cos_title"] + ["cosine_title"]+ ["cosine_title_w2v"]+["common_title"] + ["avg_cos_body"]+ ["cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+    #
+    # X = rv[
+    #     ["cosine_title"]+ ["cosine_title_w2v"]+["common_title"] + ["cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
     #     + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
-    #     + ["max_query_idf"]  + ["max_pos_query_idf"]  + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
-    #     + ["max_title_idf"]  + ["max_pos_title_idf"]  + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
-    #     + ["max_body_idf"]   + ["max_pos_body_idf"]   + ["norm_body_idf"]  + ["len_body_idf"]  + ["prob_body_idf"]
-    #     + ["query_vec_w2v_pos"] + ["query_vec_w2v_max"] + ["query_vec_w2v_min"]  + ["query_vec_w2v_norm"] + ["query_vec_w2v_sum"]
-    #     + ["doc_vec_w2v_pos"] + ["doc_vec_w2v_max"] + ["doc_vec_w2v_min"]   + ["doc_vec_w2v_norm"] + ["doc_vec_w2v_sum"]
-    #     + ["body_vec_w2v_pos"] + ["body_vec_w2v_max"] + ["body_vec_w2v_min"] + ["body_vec_w2v_norm"] + ["body_vec_w2v_sum"]
+    #     # ["common_title"] + ["common_body"]
+    #     + ["common_title_s"] + ["common_body_s"]
+    #     + ["max_query_idf"] + ["norm_query_idf"] + ["sum_query_idf"] + ["len_query_idf"] + ["prob_query_idf"] +["mean_query_idf"]
+    #     + ["max_title_idf"] + ["norm_title_idf"] + ["sum_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]+["mean_title_idf"]
+    #     + ["max_body_idf"] + ["norm_body_idf"] + ["sum_body_idf"] + ["len_body_idf"] + ["prob_body_idf"] +["mean_body_idf"]
+    #     + ["query_vec_w2v_sum"]+ ["doc_vec_w2v_sum"] + ["body_vec_w2v_sum"]
+    #     + ["query_vec_w2v_max"]+ ["doc_vec_w2v_max"] + ["body_vec_w2v_max"]
+    #
+    #     + ["query_vec_w2v_max"] + ["query_vec_w2v_norm"] + ["query_vec_w2v_sum"] + ["query_vec_w2v_prob"]
+    #     + ["doc_vec_w2v_max"] + ["doc_vec_w2v_norm"] + ["doc_vec_w2v_sum"] + ["doc_vec_w2v_prob"]
+    #     + ["body_vec_w2v_max"] + ["body_vec_w2v_norm"] + ["body_vec_w2v_sum"] + ["body_vec_w2v_prob"]
+    #     + ["query_title_max_pos"] + ["query_title_max"] + ["query_title_norm"] + ["query_title_sum"]
+    #     + ["query_body_max_pos"] + ["query_body_max"] + ["query_body_norm"] + ["query_body_sum"]
+    #     + ["title_count"] + ["body_count"]
     #     + ["query_vec_blob_p"] + ["query_vec_blob_s"]
     #     + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
     #     + ['body_vec_blob_p'] + ['body_vec_blob_s']
+    #     # + ["common_title_noun"] + ["common_body_noun"]
+    #     # + ["title_spacy"] + ["body_spacy"]
     #
     #     ]
+    # #
 
-    # X = rv[ ["avg_cos_title"] + ["cosine_title"]+ ["cosine_title_w2v"]+["common_title"] + ["avg_cos_body"]+ ["cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
-    #     + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
-    #     + ["max_query_idf"]  + ["max_pos_query_idf"]  + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
-    #     + ["max_title_idf"]  + ["max_pos_title_idf"]  + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
-    #     + ["max_body_idf"]   + ["max_pos_body_idf"]   + ["norm_body_idf"]  + ["len_body_idf"]  + ["prob_body_idf"]
-    #     + ["query_vec_w2v_pos"] + ["query_vec_w2v_max"]  + ["query_vec_w2v_min"] + ["query_vec_w2v_sum"]
-    #     + ["doc_vec_w2v_pos"] + ["doc_vec_w2v_max"]  + ["doc_vec_w2v_min"] + ["doc_vec_w2v_sum"]
-    #     + ["body_vec_w2v_pos"] + ["body_vec_w2v_max"] + ["body_vec_w2v_min"] + ["body_vec_w2v_sum"]
-    #
-    #     ]
-
-
-
-
-
-
-
-
-
-
-    # X = rv[ ["avg_cos_title"] + ["cosine_title"]+ ["cosine_title_w2v"]+["common_title"] + ["avg_cos_body"]+ ["cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
-    #     + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
-    #     ]
-
-
-    # rv["title_vec_w2v_max"] = rv.apply(lambda x: np.max(x["query_vec"]), axis=1)
-    # rv["title_vec_w2v_min"] = rv.apply(lambda x: np.min(x["query_vec"]), axis=1)
-    # rv["doc_vec_w2v_max"] = rv.apply(lambda x: np.max(x["doc_vec_w2v"]), axis=1)
-    # rv["doc_vec_w2v_min"] = rv.apply(lambda x: np.min(x["doc_vec_w2v"]), axis=1)
-    # rv["body_vec_w2v_max"] = rv.apply(lambda x: np.max(x["body_vec_w2v"]), axis=1)
-    # rv["body_vec_w2v_min"]
-
-    from sklearn.preprocessing import normalize
-    # X = normalize(X)
-
-    # X = rv[
-    #      ["max_query_idf"]  + ["max_pos_query_idf"]  + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
-    #     + ["max_title_idf"]  + ["max_pos_title_idf"]  + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
-    #     + ["max_body_idf"]   + ["max_pos_body_idf"]   + ["norm_body_idf"]  + ["len_body_idf"]  + ["prob_body_idf"]]
-
-
-    # X = rv[ ["common_title"] + ["common_body"]]
-    #
-    # X = rv[ ["cosine_title"]+ ["common_title"] + ["cosine_body"] + ["common_body"]]
-
-    # print(rv["doc_vec_body"].shape)
-    # print(rv["doc_vec_body"][0].shape)
-    # # print([x for x in rv["doc_vec_body"]])
-    # # X = rv["doc_vec_body"].tomatrix
-    # X = np.zeros((len(rv["doc_vec_body"]), rv["doc_vec_body"][0].shape[1]))
-    # for i in range(len(rv["doc_vec_body"])):
-    #     doc = scipy.sparse.coo_matrix(rv["doc_vec_body"][i])
-    #     for doc_word, doc_idf in zip(doc.col, doc.data):
-    #         X[i][doc_word] = doc_idf
-    #
-    #
-    # print(X)
-    # Y = [v for k, v in rv["position"].items()]
-    # X = normalize(X)
-    Y = one_hot([v for k, v in rv["position"].items()])
+    Y = [v for k, v in rv["position"].items()]
+    # from sklearn import preprocessing
+    # X = preprocessing.normalize(X)
+    # Y = one_hot([v for k, v in rv["position"].items()])
 
 
     ''' Step 7. Splitting the data for validation'''
@@ -689,12 +571,17 @@ def create_model(all_documents_file, relevance_file,query_file):
 
     ''' Step 8. Classification and validation'''
     target_names = ['1', '2', '3','4']
-
+    # from sklearn.cluster import KMeans
+    #
+    # kmeans = KMeans(n_clusters=5).fit(X)
+    # # y_kmeans = kmeans.predict(X)
+    # print(classification_report(y_test, kmeans.predict(X_test), target_names=target_names))
 
     from sklearn.svm import LinearSVC
-    clf = RandomForestClassifier(random_state=0, n_estimators=3000).fit(X_train, y_train)
+    clf = RandomForestClassifier().fit(X_train, y_train)
+    # clf = RandomForestClassifier(random_state=0, n_estimators=3000).fit(X_train, y_train)
 
-
+    # clf = RandomForestClassifier(class_weight="balanced").fit(X_train, y_train)
 
     # clf = RandomForestClassifier(random_state=0).fit(X_train, y_train)
 
@@ -725,13 +612,16 @@ def create_model(all_documents_file, relevance_file,query_file):
     # clf = RandomForestClassifier(class_weight= [{0: 1, 1: 50}, {0: 1, 1: 25}, {0: 1, 1: 10}, {0: 1, 1: 5}] ).fit(X_train, y_train)
 
     # clf = LinearSVC(random_state=0).fit(X_train, y_train)
-
+    # clf = LogisticRegression().fit(X_train, y_train)
+    #
+    # LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+    #                    intercept_scaling=1, penalty='l2', random_state=None, tol=0.0001)
 # NOT USING
     # clf = MultinomialNB().fit(X_train, y_train)
     # clf = OneVsRestClassifier(MultinomialNB()).fit(X_train, y_train)
     # clf = MultinomialNB().fit(X_train, y_train)
     # clf = RandomForestClassifier().fit(X_train, y_train)
-    from sklearn.svm import LinearSVC
+    # from sklearn.svm import LinearSVC
     # clf = OneVsRestClassifier(LinearSVC(random_state=0)).fit(X_train, y_train)
     # clf = SVC().fit(X_train, y_train)
 

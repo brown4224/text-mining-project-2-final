@@ -1,0 +1,519 @@
+    Y = [v for k, v in rv["position"].items()]
+
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]
+           # + ["query_vec_w2v_pos"] + ["query_vec_w2v_max"] + ["query_vec_w2v_min"] + ["query_vec_w2v_sum"]
+           # + ["doc_vec_w2v_pos"] + ["doc_vec_w2v_max"] + ["doc_vec_w2v_min"] + ["doc_vec_w2v_sum"]
+           # + ["body_vec_w2v_pos"] + ["body_vec_w2v_max"] + ["body_vec_w2v_min"] + ["body_vec_w2v_sum"]
+    ]
+             precision    recall  f1-score   support
+
+          1       0.48      0.49      0.49       122
+          2       0.27      0.28      0.27       120
+          3       0.43      0.53      0.48       246
+          4       0.28      0.14      0.19       119
+
+avg / total       0.38      0.40      0.38       607
+
+  X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+                     precision    recall  f1-score   support
+
+          1       0.34      0.34      0.34       122
+          2       0.21      0.23      0.22       120
+          3       0.45      0.50      0.47       246
+          4       0.30      0.19      0.24       119
+
+avg / total       0.35      0.35      0.35       607
+
+    X = rv[
+        # ["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        # "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+            ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]
+           # + ["query_vec_w2v_pos"] + ["query_vec_w2v_max"] + ["query_vec_w2v_min"] + ["query_vec_w2v_sum"]
+           # + ["doc_vec_w2v_pos"] + ["doc_vec_w2v_max"] + ["doc_vec_w2v_min"] + ["doc_vec_w2v_sum"]
+           # + ["body_vec_w2v_pos"] + ["body_vec_w2v_max"] + ["body_vec_w2v_min"] + ["body_vec_w2v_sum"]
+    ]
+             precision    recall  f1-score   support
+
+          1       0.44      0.38      0.41       122
+          2       0.23      0.26      0.24       120
+          3       0.40      0.48      0.44       246
+          4       0.34      0.21      0.26       119
+
+avg / total       0.36      0.36      0.36       607
+
+    X = rv[
+        # ["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        # "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+            ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"]  + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
+           + ["max_title_idf"]  + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
+           + ["max_body_idf"]  + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]
+           # + ["query_vec_w2v_pos"] + ["query_vec_w2v_max"] + ["query_vec_w2v_min"] + ["query_vec_w2v_sum"]
+           # + ["doc_vec_w2v_pos"] + ["doc_vec_w2v_max"] + ["doc_vec_w2v_min"] + ["doc_vec_w2v_sum"]
+           # + ["body_vec_w2v_pos"] + ["body_vec_w2v_max"] + ["body_vec_w2v_min"] + ["body_vec_w2v_sum"]
+    ]             precision    recall  f1-score   support
+
+          1       0.35      0.39      0.37       122
+          2       0.29      0.30      0.29       120
+          3       0.46      0.55      0.50       246
+          4       0.35      0.15      0.21       119
+
+avg / total       0.38      0.39      0.38       607
+
+
+    X = rv[
+        # ["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        # "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+            ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["sum_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"]+ ["sum_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"]+["sum_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]
+           # + ["query_vec_w2v_pos"] + ["query_vec_w2v_max"] + ["query_vec_w2v_min"] + ["query_vec_w2v_sum"]
+           # + ["doc_vec_w2v_pos"] + ["doc_vec_w2v_max"] + ["doc_vec_w2v_min"] + ["doc_vec_w2v_sum"]
+           # + ["body_vec_w2v_pos"] + ["body_vec_w2v_max"] + ["body_vec_w2v_min"] + ["body_vec_w2v_sum"]
+    ]
+             precision    recall  f1-score   support
+
+          1       0.39      0.37      0.38       122
+          2       0.30      0.34      0.32       120
+          3       0.44      0.53      0.48       246
+          4       0.34      0.18      0.23       119
+
+avg / total       0.39      0.39      0.38       607
+
+    X = rv[
+        ["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["sum_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"]+ ["sum_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"]+["sum_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]
+           # + ["query_vec_w2v_pos"] + ["query_vec_w2v_max"] + ["query_vec_w2v_min"] + ["query_vec_w2v_sum"]
+           # + ["doc_vec_w2v_pos"] + ["doc_vec_w2v_max"] + ["doc_vec_w2v_min"] + ["doc_vec_w2v_sum"]
+           # + ["body_vec_w2v_pos"] + ["body_vec_w2v_max"] + ["body_vec_w2v_min"] + ["body_vec_w2v_sum"]
+    ]
+             precision    recall  f1-score   support
+
+          1       0.36      0.33      0.34       122
+          2       0.26      0.27      0.26       120
+          3       0.45      0.56      0.50       246
+          4       0.25      0.13      0.17       119
+
+avg / total       0.35      0.37      0.36       607
+    X = rv[
+        ["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["norm_query_idf"]  + ["len_query_idf"] + ["prob_query_idf"]
+           + ["max_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
+           + ["max_body_idf"]+ ["norm_body_idf"]+ ["len_body_idf"] + ["prob_body_idf"]
+
+    ]
+             precision    recall  f1-score   support
+
+          1       0.38      0.43      0.40       122
+          2       0.22      0.23      0.22       120
+          3       0.42      0.48      0.45       246
+          4       0.30      0.15      0.20       119
+
+avg / total       0.35      0.36      0.35       607
+
+
+
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+           # + ["title_spacy"] + ["body_spacy"]
+           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]
+           + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           + ['body_vec_blob_p'] + ['body_vec_blob_s']
+
+    ]
+                 precision    recall  f1-score   support
+
+          1       0.46      0.45      0.45       122
+          2       0.34      0.29      0.31       120
+          3       0.47      0.64      0.54       246
+          4       0.37      0.16      0.22       119
+
+avg / total       0.42      0.44      0.42       607
+
+
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+           # + ["title_spacy"] + ["body_spacy"]
+           # + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           # + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
+           # + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
+           # + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]
+           + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           + ['body_vec_blob_p'] + ['body_vec_blob_s']
+
+    ]
+
+                 precision    recall  f1-score   support
+
+          1       0.34      0.36      0.35       122
+          2       0.23      0.23      0.23       120
+          3       0.45      0.52      0.48       246
+          4       0.28      0.17      0.21       119
+
+avg / total       0.35      0.36      0.35       607
+
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+           # + ["title_spacy"] + ["body_spacy"]
+           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]+["mean_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]+["mean_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"] +["mean_body_idf"]
+           + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           + ['body_vec_blob_p'] + ['body_vec_blob_s']
+
+    ]             precision    recall  f1-score   support
+
+          1       0.32      0.33      0.33       122
+          2       0.26      0.33      0.29       120
+          3       0.44      0.50      0.46       246
+          4       0.30      0.13      0.19       119
+
+avg / total       0.35      0.36      0.35       607
+
+
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+           + ["title_spacy"] + ["body_spacy"]
+           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]
+           + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           + ['body_vec_blob_p'] + ['body_vec_blob_s']
+
+    ]
+
+                 precision    recall  f1-score   support
+
+          1       0.48      0.47      0.47       122
+          2       0.28      0.25      0.27       120
+          3       0.47      0.60      0.52       246
+          4       0.31      0.17      0.22       119
+
+avg / total       0.40      0.42      0.40       607
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+           + ["title_spacy"] + ["body_spacy"]
+           # + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           # + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
+           # + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
+           # + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]
+           # + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           # + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           # + ['body_vec_blob_p'] + ['body_vec_blob_s']
+
+    ]
+
+                 precision    recall  f1-score   support
+
+          1       0.39      0.39      0.39       122
+          2       0.18      0.17      0.17       120
+          3       0.44      0.52      0.47       246
+          4       0.25      0.16      0.19       119
+
+avg / total       0.34      0.35      0.34       607
+
+
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+           + ["title_spacy"] + ["body_spacy"]
+           + ["common_title_noun"] + ["common_body_noun"]
+
+           # + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           # + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
+           # + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
+           # + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]
+           # + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           # + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           # + ['body_vec_blob_p'] + ['body_vec_blob_s']
+
+    ]
+             precision    recall  f1-score   support
+
+          1       0.33      0.31      0.32       122
+          2       0.22      0.23      0.22       120
+          3       0.39      0.48      0.43       246
+          4       0.27      0.15      0.19       119
+
+avg / total       0.32      0.33      0.32       607
+
+
+
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+           # + ["title_spacy"] + ["body_spacy"]
+           # + ["common_title_noun"] + ["common_body_noun"]
+
+           # + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           # + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
+           # + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
+           # + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]
+           # + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           # + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           # + ['body_vec_blob_p'] + ['body_vec_blob_s']
+
+    ]
+             precision    recall  f1-score   support
+
+          1       0.33      0.34      0.33       122
+          2       0.20      0.23      0.21       120
+          3       0.41      0.47      0.44       246
+          4       0.29      0.17      0.21       119
+
+avg / total       0.33      0.34      0.33       607
+
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+           # + ["title_spacy"] + ["body_spacy"]
+           # + ["common_title_noun"] + ["common_body_noun"]
+
+           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]
+           # + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           # + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           # + ['body_vec_blob_p'] + ['body_vec_blob_s']
+
+    ]
+             precision    recall  f1-score   support
+
+          1       0.42      0.42      0.42       122
+          2       0.26      0.27      0.26       120
+          3       0.47      0.57      0.52       246
+          4       0.31      0.18      0.23       119
+
+avg / total       0.39      0.40      0.39       607
+
+
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+           # + ["title_spacy"] + ["body_spacy"]
+           # + ["common_title_noun"] + ["common_body_noun"]
+
+           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]
+           + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           + ['body_vec_blob_p'] + ['body_vec_blob_s']
+
+    ]
+             precision    recall  f1-score   support
+
+          1       0.41      0.45      0.43       122
+          2       0.24      0.27      0.25       120
+          3       0.45      0.51      0.48       246
+          4       0.31      0.18      0.23       119
+
+avg / total       0.38      0.38      0.38       607
+
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]
+           # + ["title_spacy"] + ["body_spacy"]
+           # + ["common_title_noun"] + ["common_body_noun"]
+
+           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]+["mean_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]+["mean_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]+["mean_body_idf"]
+           + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           + ['body_vec_blob_p'] + ['body_vec_blob_s']
+
+    ]
+                 precision    recall  f1-score   support
+
+          1       0.44      0.42      0.43       122
+          2       0.27      0.28      0.27       120
+          3       0.47      0.58      0.52       246
+          4       0.32      0.16      0.21       119
+
+avg / total       0.39      0.41      0.39       607
+
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"]  + ["common_title_s"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]+ ["common_body_s"]
+           # + ["title_spacy"] + ["body_spacy"]
+           # + ["common_title_noun"] + ["common_body_noun"]
+
+           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]+["mean_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]+["mean_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]+["mean_body_idf"]
+           + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           + ['body_vec_blob_p'] + ['body_vec_blob_s']
+    #     + ["title_count"] + ["body_count"]
+
+
+    ]
+             precision    recall  f1-score   support
+
+          1       0.40      0.43      0.41       122
+          2       0.35      0.35      0.35       120
+          3       0.48      0.59      0.53       246
+          4       0.25      0.13      0.17       119
+
+avg / total       0.40      0.42      0.40
+
+KMEAN  AVG COS Title
+   X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"]  + ["common_title_s"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]+ ["common_body_s"]
+             precision    recall  f1-score   support
+
+          1       0.00      0.00      0.00         0
+          2       0.11      0.02      0.04       122
+          3       0.19      0.44      0.27       120
+          4       0.43      0.20      0.27       246
+
+avg / total       0.24      0.17      0.17       607
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"]  + ["common_title_s"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]+ ["common_body_s"]
+
+KMEAN
+           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]+["mean_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]+["mean_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]+["mean_body_idf"]
+           + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           + ['body_vec_blob_p'] + ['body_vec_blob_s']
+
+
+    ]
+             precision    recall  f1-score   support
+
+          1       0.00      0.00      0.00         0
+          2       0.24      0.28      0.26       122
+          3       0.21      0.28      0.24       120
+          4       0.38      0.26      0.31       246
+
+avg / total       0.24      0.21      0.22       607
+
+Kmean
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"]
+
+                     precision    recall  f1-score   support
+
+          1       0.00      0.00      0.00         0
+          2       0.16      0.34      0.22       122
+          3       0.21      0.31      0.25       120
+          4       0.45      0.10      0.17       246
+
+avg / total       0.26      0.17      0.16       607
+
+
+
+Random Forest
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"]  + ["common_title_s"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]+ ["common_body_s"]
+
+
+           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]+["mean_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]+["mean_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]+["mean_body_idf"]
+           + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           + ['body_vec_blob_p'] + ['body_vec_blob_s']
+
+           + ["query_title_max"] + ["query_body_max"]
+
+
+    ]
+             precision    recall  f1-score   support
+
+          1       0.38      0.43      0.41       122
+          2       0.30      0.27      0.28       120
+          3       0.52      0.59      0.55       246
+          4       0.41      0.28      0.33       119
+
+avg / total       0.43      0.43      0.43       607
+
+
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"]  + ["common_title_s"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]+ ["common_body_s"]
+
+
+           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]+["mean_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]+["mean_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]+["mean_body_idf"]
+           + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           + ['body_vec_blob_p'] + ['body_vec_blob_s']
+
+           + ["query_title_max"] + ["query_body_max"]
+           + ["query_title_norm"] + ["query_body_norm"]
+           # + ["query_title_prob"]+ ["query_body_prob"]
+           #  +  ["query_title_sum"] +["query_body_sum"]
+           # + ["query_title_max_pos"] + ["query_body_max_pos"]
+
+
+    ]
+             precision    recall  f1-score   support
+
+          1       0.38      0.37      0.38       122
+          2       0.27      0.28      0.28       120
+          3       0.46      0.57      0.51       246
+          4       0.29      0.16      0.21       119
+
+avg / total       0.38      0.39      0.38       607
+
+
+###################################################################################################
+    X = rv[["avg_cos_title"] + ["cosine_title"] + ["cosine_title_w2v"] + ["common_title"]  + ["common_title_s"] + ["avg_cos_body"] + [
+        "cosine_body"] + ["cosine_body_w2v"] + ["common_body"]+ ["common_body_s"]
+
+
+           + ["cosine_title_pblob"] + ["cosine_title_sblob"] + ["cosine_body_pblob"] + ["cosine_body_sblob"]
+           + ["max_query_idf"] + ["max_pos_query_idf"] + ["norm_query_idf"] + ["len_query_idf"] + ["prob_query_idf"]+["mean_query_idf"]
+           + ["max_title_idf"] + ["max_pos_title_idf"] + ["norm_title_idf"] + ["len_title_idf"] + ["prob_title_idf"]+["mean_title_idf"]
+           + ["max_body_idf"] + ["max_pos_body_idf"] + ["norm_body_idf"] + ["len_body_idf"] + ["prob_body_idf"]+["mean_body_idf"]
+           + ["query_vec_blob_p"] + ["query_vec_blob_s"]
+           + ['doc_vec_blob_p'] + ['doc_vec_blob_s']
+           + ['body_vec_blob_p'] + ['body_vec_blob_s']
+
+           # + ["query_title_max"] + ["query_body_max"]
+           # + ["query_title_norm"] + ["query_body_norm"]
+           # + ["query_title_prob"]+ ["query_body_prob"]
+           #  +  ["query_title_sum"] +["query_body_sum"]
+           # + ["query_title_max_pos"] + ["query_body_max_pos"]
+
+
+    ]
+
+                 precision    recall  f1-score   support
+
+          1       0.41      0.40      0.40       122
+          2       0.37      0.38      0.37       120
+          3       0.47      0.59      0.52       246
+          4       0.44      0.21      0.28       119
+
+avg / total       0.43      0.43      0.42       607
