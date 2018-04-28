@@ -1,0 +1,135 @@
+Base with Random Forest
+    X = rv[["cosine_title"] + ["cosine_body"]
+    ]
+
+             precision    recall  f1-score   support
+
+          1       0.34      0.31      0.33       122
+          2       0.21      0.20      0.20       120
+          3       0.49      0.57      0.52       246
+          4       0.27      0.22      0.24       119
+
+avg / total       0.36      0.37      0.37       607
+
+    X = rv[["cosine_title"] + ["cosine_body"]
+           + ["cosine_title_w2v"]+ ["cosine_body_w2v"]
+    ]
+
+
+
+             precision    recall  f1-score   support
+
+          1       0.33      0.35      0.34       122
+          2       0.23      0.22      0.22       120
+          3       0.45      0.51      0.48       246
+          4       0.31      0.22      0.25       119
+
+avg / total       0.35      0.36      0.36       607
+
+    ''' Step 6. Defining the feature and label  for classification'''
+    X = rv[["cosine_title"] + ["cosine_body"]
+           # + ["cosine_title_w2v"]+ ["cosine_body_w2v"]
+           + ["common_title_s"]+ ["common_body_s"]
+    ]
+             precision    recall  f1-score   support
+
+          1       0.36      0.39      0.38       122
+          2       0.21      0.19      0.20       120
+          3       0.45      0.51      0.48       246
+          4       0.30      0.21      0.25       119
+
+avg / total       0.35      0.36      0.36       607
+
+    ''' Step 6. Defining the feature and label  for classification'''
+    X = rv[["cosine_title"] + ["cosine_body"]
+           # + ["cosine_title_w2v"]+ ["cosine_body_w2v"]
+           + ["common_title"]+ ["common_body"]
+    ]
+             precision    recall  f1-score   support
+
+          1       0.35      0.34      0.35       122
+          2       0.16      0.18      0.17       120
+          3       0.43      0.45      0.44       246
+          4       0.27      0.20      0.23       119
+
+avg / total       0.33      0.33      0.33       607
+    X = rv[["cosine_title"] + ["cosine_body"]
+           + ["cosine_title_w2v"]+ ["cosine_body_w2v"]
+           + ["common_title_s"]+ ["common_body_s"]
+    ]
+
+             precision    recall  f1-score   support
+
+          1       0.35      0.43      0.38       122
+          2       0.22      0.23      0.22       120
+          3       0.45      0.49      0.47       246
+          4       0.30      0.14      0.19       119
+
+avg / total       0.35      0.36      0.35       607
+
+    ''' Step 6. Defining the feature and label  for classification'''
+    X = rv[["cosine_title"] + ["cosine_body"]
+           # + ["cosine_title_w2v"]+ ["cosine_body_w2v"]
+           # + ["common_title_s"]+ ["common_body_s"]
+           + ["title_noun_union"] + ["body_noun_union"]
+    ]
+                 precision    recall  f1-score   support
+
+          1       0.30      0.34      0.32       122
+          2       0.21      0.22      0.22       120
+          3       0.46      0.50      0.48       246
+          4       0.33      0.22      0.26       119
+
+avg / total       0.35      0.36      0.35       607
+
+
+    X = rv[["cosine_title"] + ["cosine_body"]
+
+    clf = KNeighborsClassifier(n_neighbors=9, algorithm='brute').fit(X_train, y_train)
+
+             precision    recall  f1-score   support
+
+          1       0.39      0.41      0.40       122
+          2       0.21      0.15      0.17       120
+          3       0.47      0.64      0.54       246
+          4       0.27      0.13      0.17       119
+
+avg / total       0.36      0.40      0.37       607
+
+
+    X = rv[["cosine_title"] + ["cosine_body"]
+           + ["cosine_title_w2v"]+ ["cosine_body_w2v"]
+           # + ["common_title_s"]+ ["common_body_s"]
+           # + ["title_noun_union"] + ["body_noun_union"]
+           # + ["cosine_title_polarity"]+ ["cosine_body_polarity"]
+           # + ["cosine_title_subjectivity"]+ ["cosine_body_subjectivity"]
+
+           ]
+                        precision    recall  f1-score   support
+
+          1       0.36      0.35      0.36       122
+          2       0.22      0.22      0.22       120
+          3       0.42      0.54      0.48       246
+          4       0.26      0.13      0.17       119
+
+avg / total       0.34      0.36      0.34       607
+
+    clf = KNeighborsClassifier(n_neighbors=11, algorithm='brute').fit(X_train, y_train)
+
+
+          1       0.38      0.38      0.38       122
+          2       0.22      0.21      0.21       120
+          3       0.47      0.60      0.52       246
+          4       0.38      0.17      0.23       119
+
+avg / total       0.38      0.39      0.38       607
+    clf = KNeighborsClassifier(n_neighbors=21, algorithm='brute').fit(X_train, y_train)
+
+             precision    recall  f1-score   support
+
+          1       0.42      0.41      0.41       122
+          2       0.14      0.04      0.06       120
+          3       0.43      0.73      0.55       246
+          4       0.39      0.12      0.18       119
+
+avg / total       0.36      0.41      0.35       607
