@@ -1,8 +1,10 @@
+'''  Sean McGlincy '''
+'''  Textmining:  Project 2'''
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.spatial.distance import cosine
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from sklearn.externals import joblib
@@ -29,7 +31,6 @@ def idf_prob(doc_sparce):
     for doc_word, doc_idf in zip(doc.col, doc.data):
         dp *= doc_idf
     return dp
-
 
 def convert_to_blob(text):
     opinion = TextBlob(text)
@@ -74,7 +75,6 @@ def evaluate_model(model, query, document):
 
     ''' Step 5.2a IDF Extraction: Query'''
     mq = np.max(query_vec)
-    mqp = np.argmax(query_vec)
     sq = np.sum(query_vec)
     lq = text_length(query)
     sqn = sq / lq
@@ -83,7 +83,6 @@ def evaluate_model(model, query, document):
 
     ''' Step 5.2b IDF Extraction: Query'''
     mt = np.max(title_vec)
-    mtp = np.argmax(title_vec)
     st = np.sum(title_vec)
     lt = text_length(title)
     stn = st / lt
@@ -92,7 +91,6 @@ def evaluate_model(model, query, document):
 
     ''' Step 5.2c IDF Extraction: Query'''
     mb = np.max(body_vec)
-    mbp = np.argmax(body_vec)
     sb = np.sum(body_vec)
     lb = text_length(body)
     sbn = sb / lb
@@ -118,9 +116,9 @@ def evaluate_model(model, query, document):
     result = model[1].predict([[ cos_title, cos_body,
                                  tbq_polarity, tbt_polarity, tbb_polarity,
                                  tbq_subjectivity, tbt_subjectivity, tbb_subjectivity,
-                                 mq, mqp, sqn, lq, pq, mnq,
-                                 mt, mtp, stn, lt, pt, mnt,
-                                 mb, mbp, sbn, lb, pb, mnb
+                                 mq, sqn, lq, pq, mnq,
+                                 mt, stn, lt, pt, mnt,
+                                 mb, sbn, lb, pb, mnb
                                  ]])
     return result[0],0.5
 
@@ -156,7 +154,6 @@ def create_model(all_documents_file, relevance_file,query_file):
 
     ''' Step 5.2a IDF Extraction: Query'''
     rv["max_query_idf"] = rv.apply(lambda x: np.max(x["query_vec"]), axis=1)
-    rv["max_pos_query_idf"] = rv.apply(lambda x: np.argmax(x["query_vec"]), axis=1)
     rv["sum_query_idf"] = rv.apply(lambda x: np.sum(x["query_vec"]), axis=1)
     rv["len_query_idf"] = rv.apply(lambda x: text_length(x["query"]), axis=1)
     rv["norm_query_idf"] = np.divide(rv["sum_query_idf"], rv["len_query_idf"])
@@ -165,7 +162,6 @@ def create_model(all_documents_file, relevance_file,query_file):
 
     ''' Step 5.2b IDF Extraction: Query'''
     rv["max_title_idf"] = rv.apply(lambda x: np.max(x["doc_vec_title"]), axis =1)
-    rv["max_pos_title_idf"] = rv.apply(lambda x: np.argmax(x["doc_vec_title"]), axis =1)
     rv["sum_title_idf"] = rv.apply(lambda x: np.sum(x["doc_vec_title"]), axis =1)
     rv["len_title_idf"] = rv.apply(lambda x: text_length(x["title"]), axis =1)
     rv["norm_title_idf"] = np.divide(rv["sum_title_idf"] ,rv["len_title_idf"] )
@@ -174,7 +170,6 @@ def create_model(all_documents_file, relevance_file,query_file):
 
     ''' Step 5.2c IDF Extraction: Query'''
     rv["max_body_idf"] = rv.apply(lambda x: np.max(x["doc_vec_body"]), axis =1)
-    rv["max_pos_body_idf"] = rv.apply(lambda x: np.argmax(x["doc_vec_body"]), axis =1)
     rv["sum_body_idf"] = rv.apply(lambda x: np.sum(x["doc_vec_body"]), axis =1)
     rv["len_body_idf"] = rv.apply(lambda x: text_length(x["body"]), axis =1)
     rv["norm_body_idf"] = np.divide(rv["sum_body_idf"] ,rv["len_body_idf"] )
@@ -197,13 +192,12 @@ def create_model(all_documents_file, relevance_file,query_file):
     rv["body_subjectivity"] = rv.apply(lambda x: subjectivity(x["body_vec_blob"]), axis=1)
 
     ''' Step 6. Defining the feature and label  for classification'''
-
-    X = rv[  ["cosine_title"]       + ["cosine_body"]
-           + ["query_polarity"]     + ["title_polarity"]     + ["body_polarity"]
-           + ["query_subjectivity"] + ["title_subjectivity"] + ["body_subjectivity"]
-           + ["max_query_idf"]      + ["max_pos_query_idf"]  + ["norm_query_idf"]   + ["len_query_idf"] + ["prob_query_idf"] + ["mean_query_idf"]
-           + ["max_title_idf"]      + ["max_pos_title_idf"]  + ["norm_title_idf"]   + ["len_title_idf"] + ["prob_title_idf"] + ["mean_title_idf"]
-           + ["max_body_idf"]       + ["max_pos_body_idf"]   + ["norm_body_idf"]    + ["len_body_idf"]  + ["prob_body_idf"]  + ["mean_body_idf"]
+    X = rv[  ["cosine_title"]        + ["cosine_body"]
+           + ["query_polarity"]      + ["title_polarity"]     + ["body_polarity"]
+           + ["query_subjectivity"]  + ["title_subjectivity"] + ["body_subjectivity"]
+           + ["max_query_idf"]       + ["norm_query_idf"]     + ["len_query_idf"]     + ["prob_query_idf"] + ["mean_query_idf"]
+           + ["max_title_idf"]       + ["norm_title_idf"]     + ["len_title_idf"]     + ["prob_title_idf"] + ["mean_title_idf"]
+           + ["max_body_idf"]        + ["norm_body_idf"]      + ["len_body_idf"]      + ["prob_body_idf"]  + ["mean_body_idf"]
            ]
     Y = [v for k, v in rv["position"].items()]
 
@@ -212,7 +206,9 @@ def create_model(all_documents_file, relevance_file,query_file):
 
     ''' Step 8. Classification and validation'''
     target_names = ['1', '2', '3','4']
-    clf =    RandomForestClassifier().fit(X_train, y_train)
+
+    # clf = GradientBoostingClassifier(n_estimators=1000).fit(X_train, y_train)
+    clf = GradientBoostingClassifier().fit(X_train, y_train)
 
     print(classification_report(y_test,  clf.predict(X_test), target_names=target_names))
 

@@ -203,3 +203,62 @@ avg / total       0.46      0.47      0.46       607
           4       0.36      0.17      0.23       119
 
 avg / total       0.43      0.45      0.43       607
+
+
+    X = rv[  ["cosine_title"]       + ["cosine_body"]
+           + ["query_polarity"]     + ["title_polarity"]     + ["body_polarity"]
+           + ["query_subjectivity"] + ["title_subjectivity"] + ["body_subjectivity"]
+           + ["max_query_idf"]      + ["max_pos_query_idf"]  + ["norm_query_idf"]   + ["len_query_idf"] + ["prob_query_idf"] + ["mean_query_idf"]
+           + ["max_title_idf"]      + ["max_pos_title_idf"]  + ["norm_title_idf"]   + ["len_title_idf"] + ["prob_title_idf"] + ["mean_title_idf"]
+           + ["max_body_idf"]       + ["max_pos_body_idf"]   + ["norm_body_idf"]    + ["len_body_idf"]  + ["prob_body_idf"]  + ["mean_body_idf"]
+           ]
+
+                        precision    recall  f1-score   support
+
+          1       0.52      0.41      0.46       122
+          2       0.33      0.28      0.30       120
+          3       0.48      0.69      0.56       246
+          4       0.38      0.18      0.24       119
+
+avg / total       0.44      0.45      0.43       607
+
+    label_weights = np.divide(y_train, 10)
+             precision    recall  f1-score   support
+
+          1       0.54      0.22      0.31       122
+          2       0.41      0.21      0.28       120
+          3       0.46      0.72      0.56       246
+          4       0.29      0.25      0.27       119
+
+avg / total       0.43      0.43      0.40       607
+
+    label_weights = np.multiply(y_train, 10)
+
+             precision    recall  f1-score   support
+
+          1       0.56      0.23      0.33       122
+          2       0.41      0.21      0.28       120
+          3       0.46      0.73      0.56       246
+          4       0.29      0.25      0.27       119
+
+avg / total       0.44      0.43      0.40       607
+             precision    recall  f1-score   support
+
+          1       0.55      0.24      0.33       122
+          2       0.36      0.17      0.24       120
+          3       0.45      0.71      0.55       246
+          4       0.27      0.25      0.26       119
+
+avg / total       0.42      0.42      0.39       607
+
+
+    clf = GradientBoostingClassifier().fit(X_train, y_train,sample_weight=y_train)
+
+             precision    recall  f1-score   support
+
+          1       0.56      0.24      0.33       122
+          2       0.36      0.17      0.24       120
+          3       0.45      0.71      0.55       246
+          4       0.27      0.25      0.26       119
+
+avg / total       0.42      0.42      0.39       607
