@@ -1,12 +1,20 @@
 import pandas as pd
+from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.spatial.distance import cosine
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, VotingClassifier, AdaBoostClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from sklearn.externals import joblib
 import scipy
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC, SVC
+
 from textblob import TextBlob
 '''Please feel free to modify this function (load_models)
    Make sure the function return the models required for the function below evaluate model
@@ -22,7 +30,12 @@ def load_models():
   The function always should return one of the positions (classes) and the confidence. In my case confidence is always 0.5.
   Preferably implement the function in a different file and call from here. Make sure keep everything else the same.
 '''
-
+def one_hot(labels):
+    l = len(labels)
+    Y= np.zeros((l, 4))
+    for i in range(l):
+        Y[i][labels[i] - 1] = 1
+    return Y
 def idf_prob(doc_sparce):
     doc = scipy.sparse.coo_matrix(doc_sparce)
     dp = 1.0
@@ -150,6 +163,19 @@ def create_model(all_documents_file, relevance_file,query_file):
     rv["doc_vec_title"] = rv.apply(lambda x: vectorizer.transform([x["title"] ]), axis =1)
     rv["doc_vec_body"] = rv.apply(lambda x: vectorizer.transform([ x["body"]]), axis =1)
 
+    rv ["text_body"] = rv.apply( lambda x :  x["title"] + x["body"] , axis =1)
+
+    vec_body = np.array(rv['text_body'])
+    X = vectorizer.transform(vec_body)
+    svd = TruncatedSVD(100)
+    # lsa = make_pipeline(svd, Normalizer(copy=False))
+
+    # Run SVD on the training data, then project the training data.
+    X2 = svd.fit_transform(X)
+
+
+    # print(vec_body)
+    # exit(0)
     ''' Step 5.1 Cosine'''
     rv["cosine_title"]  = rv.apply(lambda x: cosine_similarity(x['doc_vec_title'], x['query_vec']), axis=1)
     rv["cosine_body"]  = rv.apply(lambda x: cosine_similarity(x['doc_vec_body'], x['query_vec']), axis=1)
@@ -205,15 +231,38 @@ def create_model(all_documents_file, relevance_file,query_file):
            + ["max_title_idf"]      + ["max_pos_title_idf"]  + ["norm_title_idf"]   + ["len_title_idf"] + ["prob_title_idf"] + ["mean_title_idf"]
            + ["max_body_idf"]       + ["max_pos_body_idf"]   + ["norm_body_idf"]    + ["len_body_idf"]  + ["prob_body_idf"]  + ["mean_body_idf"]
            ]
+    # X = np.column_stack((X, X2))
+    # X = X2
     Y = [v for k, v in rv["position"].items()]
+    # Y = one_hot([v for k, v in rv["position"].items()])
 
     ''' Step 7. Splitting the data for validation'''
     X_train, X_test, y_train, y_test = train_test_split(    X, Y, test_size = 0.33, random_state = 42)
 
     ''' Step 8. Classification and validation'''
     target_names = ['1', '2', '3','4']
-    clf =    RandomForestClassifier().fit(X_train, y_train)
 
+    # scaler = StandardScaler(with_mean=False)
+    # # # scaler = MinMaxScaler()
+    # scaler = scaler.fit(X_train)
+    # X_train = scaler.transform(X_train)
+    # X_test = scaler.transform(X_test)
+    # clf =    KNeighborsClassifier(n_neighbors=5, algorithm='brute', metric='cosine').fit(X_train, y_train)
+    # clf =    RandomForestClassifier(n_estimators=100).fit(X_train, y_train)
+    S = np.divide(1, y_train)
+    # clf = SVC().fit(X_train, y_train)
+
+    clf =    GradientBoostingClassifier(n_estimators=1000).fit(X_train, y_train,sample_weight=y_train )
+    # clf =   MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(15,), random_state=1).fit(X_train, y_train)
+    # clf = OneVsRestClassifier(MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(15,), random_state=1)).fit(X_train, y_train)
+
+    #
+    # clf = VotingClassifier(
+    # #     estimators=[('ab', AdaBoostClassifier()), ('gb',  GradientBoostingClassifier(n_estimators=100)) ],
+    #     estimators=[('ab', MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(15,), random_state=1)), ('gb',  GradientBoostingClassifier(n_estimators=100)), ('rf', LogisticRegression(random_state=0)) ],
+    #     voting='soft'
+    #
+    # ).fit(X_train, y_train)
     print(classification_report(y_test,  clf.predict(X_test), target_names=target_names))
 
     ''' Step 9. Saving the data '''

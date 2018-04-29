@@ -467,7 +467,9 @@ def create_model(all_documents_file, relevance_file,query_file):
 
 
 
-    clf = GradientBoostingClassifier(n_estimators=1000).fit(X_train, y_train)
+    clf = SVC().fit(X_train, y_train)
+    # clf = GradientBoostingClassifier().fit(X_train, y_train)
+    # clf = GradientBoostingClassifier(n_estimators=1000).fit(X_train, y_train)
 
 
 
